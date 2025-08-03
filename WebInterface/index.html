@@ -290,16 +290,16 @@
   <p id="log"></p>
   <script>
     const digits = {
-      0: ["A", "B", "C", "D", "E", "F"],
-      1: ["B", "C"],
-      2: ["A", "B", "G", "E", "D"],
-      3: ["A", "B", "C", "D", "G"],
-      4: ["F", "G", "B", "C"],
-      5: ["A", "F", "G", "C", "D"],
-      6: ["A", "F", "G", "C", "D", "E"],
-      7: ["A", "B", "C"],
-      8: ["A", "B", "C", "D", "E", "F", "G"],
-      9: ["A", "B", "C", "D", "F", "G"],
+0:["A","B","C","D","E","F"],
+1:["B","C"],
+2:["A","B","G","E","D"],
+3:["A","B","C","D","G"],
+4:["F","G","B","C"],
+5:["A","F","G","C","D"],
+6:["A","F","G","C","D","E"],
+7:["A","B","C"],
+8:["A","B","C","D","E","F","G"],
+9:["A","B","C","D","F","G"],
     },
       log = document.getElementById("log"),
       brightnessSlider = document.getElementById("brightness"),
@@ -319,7 +319,7 @@
     brightnessSlider.addEventListener("change", () => updateBrightness(brightnessSlider.value));
     brightnessValue.addEventListener("input", () => {
       let e = parseInt(brightnessValue.value);
-      isNaN(e) && (e = 0), e < 0 && (e = 0), e > 128 && (e = 128), (brightnessSlider.value = e), (brightnessValue.value = e);
+      isNaN(e) && (e = 0), e < 0 && (e = 0), e > 255 && (e = 255), (brightnessSlider.value = e), (brightnessValue.value = e);
       updateBrightness(e);
     });
     function updateBrightness(value) {
