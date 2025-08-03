@@ -1,175 +1,230 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" href="favicon.png" type="image/png" />
-    <title>Clock</title>
-    <style>
-      * {
-        box-sizing: border-box;
-      }
 
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="favicon.png" type="image/png" />
+  <title>Clock</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #000;
+      color: #fff;
+      padding: 20px;
+    }
+
+    h1 {
+      margin-bottom: 25px;
+      text-align: center;
+      font-size: 42px;
+    }
+
+    #clock-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #brightness-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 15px 0;
+    }
+
+    input[type="range"] {
+      flex: 1;
+    }
+
+    input[type="number"] {
+      width: 60px;
+      padding: 6px;
+      border: none;
+      border-radius: 4px;
+    }
+
+    #clock {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    #hours,
+    #minutes {
+      position: relative;
+      display: flex;
+      flex-direction: row;
+      width: 140px;
+      height: 120px;
+      gap: 12px;
+      cursor: pointer;
+    }
+
+    #hours>*,
+    #minutes>* {
+      position: relative;
+      width: 64px;
+      height: 120px;
+    }
+
+    .s {
+      height: 40px;
+      width: 10px;
+      border-radius: 10px;
+      opacity: 0.05;
+    }
+
+    .h {
+      background-color: #00FFFF;
+    }
+
+    .m {
+      background-color: #00FFFF;
+    }
+
+    .on {
+      opacity: 1;
+    }
+
+    #colon {
+      position: relative;
+      height: 66px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      width: 14px;
+      cursor: pointer;
+    }
+
+    .dot {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 10px;
+      height: 10px;
+      background: #00FFFF;
+      border-radius: 50%;
+    }
+
+    .second {
+      top: 52px;
+    }
+
+    .A {
+      position: absolute;
+      left: 27px;
+      top: -16px;
+      transform: rotate(90deg);
+    }
+
+    .B {
+      position: absolute;
+      top: 8px;
+      left: 52px;
+    }
+
+    .C {
+      position: absolute;
+      top: 64px;
+      left: 52px;
+    }
+
+    .D {
+      position: absolute;
+      top: 96px;
+      left: 27px;
+      transform: rotate(90deg);
+    }
+
+    .E {
+      position: absolute;
+      top: 64px;
+      left: 0;
+    }
+
+    .F {
+      position: absolute;
+      top: 8px;
+      left: 0;
+    }
+
+    .G {
+      position: absolute;
+      top: 36px;
+      left: 27px;
+      transform: rotate(90deg);
+    }
+
+    #inputs {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 24px;
+      justify-content: center;
+    }
+
+    #inputs input {
+      width: 60px;
+      height: 30px;
+    }
+
+    #log {
+      text-align: center;
+      font-weight: bold;
+      color: #ee212f;
+      bottom: 0;
+    }
+
+    @media only screen and (max-width: 600px) {
       body {
-        margin: 0;
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        background: #000;
-        color: #fff;
-        padding: 20px;
+        justify-content: start;
+        padding: 10px;
       }
 
       h1 {
-        margin-bottom: 25px;
-        text-align: center;
-        font-size: 42px;
+        font-size: 32px;
       }
 
-      #clock-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+      #brightness-container {
+        margin: 0 0 10px 0;
       }
 
       #clock {
-        display: flex;
-        gap: 12px;
-        align-items: center;
-        justify-content: center;
-        flex-wrap: wrap;
-        margin-bottom: 16px;
+        gap: 6px;
       }
 
-      #clock > div:not(#colon) {
-        position: relative;
-        width: 64px;
-        height: 120px;
+      #hours,
+      #minutes {
+        gap: 6px;
+        width: 132px;
       }
+    }
+  </style>
+</head>
 
-      .s {
-        height: 40px;
-        width: 10px;
-        border-radius: 10px;
-        opacity: 0.05;
-      }
-
-      .h {
-        background-color: %HCOLOR%;
-      }
-
-      .m {
-        background-color: %MCOLOR%;
-      }
-
-      .on {
-        opacity: 1;
-      }
-
-      #colon {
-        position: relative;
-        height: 66px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        align-items: center;
-        width: 14px;
-      }
-
-      .dot {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 10px;
-        height: 10px;
-        background: %CCOLOR%;
-        border-radius: 50%;
-      }
-
-      .second {
-        top: 52px;
-      }
-
-      .A {
-        position: absolute;
-        left: 27px;
-        top: -16px;
-        transform: rotate(90deg);
-      }
-
-      .B {
-        position: absolute;
-        top: 8px;
-        left: 52px;
-      }
-
-      .C {
-        position: absolute;
-        top: 64px;
-        left: 52px;
-      }
-
-      .D {
-        position: absolute;
-        top: 96px;
-        left: 27px;
-        transform: rotate(90deg);
-      }
-
-      .E {
-        position: absolute;
-        top: 64px;
-        left: 0;
-      }
-
-      .F {
-        position: absolute;
-        top: 8px;
-        left: 0;
-      }
-
-      .G {
-        position: absolute;
-        top: 36px;
-        left: 27px;
-        transform: rotate(90deg);
-      }
-
-      #inputs {
-        display: grid;
-        grid-template-columns: 1fr auto 1fr;
-        gap: 24px;
-        justify-content: center;
-      }
-
-      #inputs input {
-        width: 60px;
-        height: 30px;
-      }
-
-      @media only screen and (max-width: 600px) {
-        body {
-          justify-content: start;
-          padding: 10px;
-        }
-
-        h1 {
-          font-size: 32px;
-        }
-
-        #clock {
-          gap: 6px;
-        }
-      }
-    </style>
-  </head>
-
-  <body>
-    <h1>Clock</h1>
-    <div id="clock-container">
-      <div id="clock">
+<body>
+  <h1>Clock</h1>
+  <div id="clock-container">
+    <div id="brightness-container">
+      <label for="brightness" style="font-weight: bold;">Brightness</label>
+      <input type="range" id="brightness" min="0" max="255" value="150"/><input type="number"
+        id="brightness-value" min="0" max="255" value="150" />
+    </div>
+    <div id="clock">
+      <div id="hours">
         <div id="hour-tens">
           <div class="s h A"></div>
           <div class="s h B"></div>
@@ -188,10 +243,12 @@
           <div class="s h F"></div>
           <div class="s h G"></div>
         </div>
-        <div id="colon">
-          <div class="dot"></div>
-          <div class="dot second"></div>
-        </div>
+      </div>
+      <div id="colon">
+        <div class="dot"></div>
+        <div class="dot second"></div>
+      </div>
+      <div id="minutes">
         <div id="minute-tens">
           <div class="s m A"></div>
           <div class="s m B"></div>
@@ -211,20 +268,13 @@
           <div class="s m G"></div>
         </div>
       </div>
-      <div id="inputs">
-        <input type="color" id="hour-input" value="%HCOLOR%" title="Hour Color" /><input
-          type="color"
-          id="colon-input"
-          value="%CCOLOR%"
-          title="Colon Color" /><input
-          type="color"
-          id="minute-input"
-          value="%MCOLOR%"
-          title="Minute Color" />
-      </div>
-      <a
-        href="/settings"
-        style="
+    </div>
+    <div id="inputs">
+      <input type="color" id="hour-input" value="#00FFFF" title="Hour Color" /><input type="color" id="colon-input"
+        value="#00FFFF" title="Colon Color" /><input type="color" id="minute-input" value="#00FFFF"
+        title="Minute Color" />
+    </div>
+    <a href="/settings" style="
           background-color: #fff;
           color: #000;
           text-decoration: none;
@@ -235,63 +285,104 @@
           padding: 10px;
           width: 100%;
           text-align: center;
-        "
-        >Settings</a
-      >
-    </div>
-    <script>
-      const digits = {
-          0: ["A", "B", "C", "D", "E", "F"],
-          1: ["B", "C"],
-          2: ["A", "B", "G", "E", "D"],
-          3: ["A", "B", "C", "D", "G"],
-          4: ["F", "G", "B", "C"],
-          5: ["A", "F", "G", "C", "D"],
-          6: ["A", "F", "G", "C", "D", "E"],
-          7: ["A", "B", "C"],
-          8: ["A", "B", "C", "D", "E", "F", "G"],
-          9: ["A", "B", "C", "D", "F", "G"],
-        },
-        hourTens = document.getElementById("hour-tens"),
-        hourUnits = document.getElementById("hour-units"),
-        colon = document.getElementById("colon"),
-        minuteTens = document.getElementById("minute-tens"),
-        minuteUnits = document.getElementById("minute-units"),
-        hourPicker = document.getElementById("hour-input"),
-        colonPicker = document.getElementById("colon-input"),
-        minutePicker = document.getElementById("minute-input");
-      function updateColor(t, e, i, n) {
-        for (const o of t.children) o.style.backgroundColor = i;
-        if (e) for (const t of e.children) t.style.backgroundColor = i;
-        window.location.href = "color?z=" + n + "&c=" + i.substring(1);
+        ">Settings</a>
+  </div>
+  <p id="log"></p>
+  <script>
+    const digits = {
+      0: ["A", "B", "C", "D", "E", "F"],
+      1: ["B", "C"],
+      2: ["A", "B", "G", "E", "D"],
+      3: ["A", "B", "C", "D", "G"],
+      4: ["F", "G", "B", "C"],
+      5: ["A", "F", "G", "C", "D"],
+      6: ["A", "F", "G", "C", "D", "E"],
+      7: ["A", "B", "C"],
+      8: ["A", "B", "C", "D", "E", "F", "G"],
+      9: ["A", "B", "C", "D", "F", "G"],
+    },
+      log = document.getElementById("log"),
+      brightnessSlider = document.getElementById("brightness"),
+      brightnessValue = document.getElementById("brightness-value");
+      hours = document.getElementById("hours"),
+      minutes = document.getElementById("minutes"),
+      hourTens = document.getElementById("hour-tens"),
+      hourUnits = document.getElementById("hour-units"),
+      colon = document.getElementById("colon"),
+      minuteTens = document.getElementById("minute-tens"),
+      minuteUnits = document.getElementById("minute-units"),
+      hourPicker = document.getElementById("hour-input"),
+      colonPicker = document.getElementById("colon-input"),
+      minutePicker = document.getElementById("minute-input");
+
+    brightnessSlider.addEventListener("input", () => { brightnessValue.value = brightnessSlider.value;});
+    brightnessSlider.addEventListener("change", () => updateBrightness(brightnessSlider.value));
+    brightnessValue.addEventListener("input", () => {
+      let e = parseInt(brightnessValue.value);
+      isNaN(e) && (e = 0), e < 0 && (e = 0), e > 128 && (e = 128), (brightnessSlider.value = e), (brightnessValue.value = e);
+      updateBrightness(e);
+    });
+    function updateBrightness(value) {
+      var xmlHttp = new XMLHttpRequest();
+      xmlHttp.open("GET", "/b?b=" + value, true);
+      xmlHttp.send();
+      xmlHttp.onreadystatechange = function() {
+        if (xmlHttp.readyState !== 4 || xmlHttp.status !== 200) {
+          console.log("Couldn't send brightness update request:" + xmlHttp.statusText);
+          log.innerText = "Couldn't send brightness update request: " + xmlHttp.statusText;
+        }
       }
-      function setDigit(t, e) {
-        const i = t.getElementsByClassName("s");
-        for (const t of i) t.classList.remove("on");
-        digits[e] &&
-          digits[e].forEach((e) => {
-            const i = t.querySelector(".s." + e);
-            i && i.classList.add("on");
-          });
+    }
+    hours.addEventListener("click", () => {
+      hourPicker.click();
+    });
+    minutes.addEventListener("click", () => {
+      minutePicker.click();
+    });
+    colon.addEventListener("click", () => {
+      colonPicker.click();
+    });
+    function updateColor(t, e, i, n) {
+      for (const o of t.children) o.style.backgroundColor = i;
+      if (e) for (const t of e.children) t.style.backgroundColor = i;
+      var xmlHttp = new XMLHttpRequest();
+      xmlHttp.open("GET", "/c?z=" + n + "&c=" + i.substring(1), true);
+      xmlHttp.send();
+      xmlHttp.onreadystatechange = function() {
+        if (xmlHttp.readyState !== 4 || xmlHttp.status !== 200) {
+          console.log("Couldn't send color update request:" + xmlHttp.statusText);
+          log.innerText = "Couldn't send color update request: " + xmlHttp.statusText;
+        }
       }
-      function updateTime() {
-        const t = new Date(),
-          e = t.getHours(),
-          i = t.getMinutes();
-        setDigit(hourTens, Math.floor(e / 10)),
-          setDigit(hourUnits, e % 10),
-          setDigit(minuteTens, Math.floor(i / 10)),
-          setDigit(minuteUnits, i % 10);
-      }
-      hourPicker.addEventListener("input", () =>
-        updateColor(hourTens, hourUnits, hourPicker.value, 0)
+    }
+    function setDigit(t, e) {
+      const i = t.getElementsByClassName("s");
+      for (const t of i) t.classList.remove("on");
+      digits[e] &&
+        digits[e].forEach((e) => {
+          const i = t.querySelector(".s." + e);
+          i && i.classList.add("on");
+        });
+    }
+    function updateTime() {
+      const t = new Date(),
+        e = t.getHours(),
+        i = t.getMinutes();
+      setDigit(hourTens, Math.floor(e / 10)),
+        setDigit(hourUnits, e % 10),
+        setDigit(minuteTens, Math.floor(i / 10)),
+        setDigit(minuteUnits, i % 10);
+    }
+    hourPicker.addEventListener("input", () =>
+      updateColor(hourTens, hourUnits, hourPicker.value, 0)
+    ),
+      colonPicker.addEventListener("input", () => updateColor(colon, null, colonPicker.value, 1)),
+      minutePicker.addEventListener("input", () =>
+        updateColor(minuteTens, minuteUnits, minutePicker.value, 2)
       ),
-        colonPicker.addEventListener("input", () => updateColor(colon, null, colonPicker.value, 1)),
-        minutePicker.addEventListener("input", () =>
-          updateColor(minuteTens, minuteUnits, minutePicker.value, 2)
-        ),
-        setInterval(updateTime, 1e4),
-        updateTime();
-    </script>
-  </body>
+      setInterval(updateTime, 1e4),
+      updateTime();
+  </script>
+</body>
+
 </html>

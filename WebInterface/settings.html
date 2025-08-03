@@ -40,12 +40,6 @@
       max-width: 284px;
     }
 
-    #brightness-container {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
     #password-container input {
       flex: 1;
       padding: 8px;
@@ -72,17 +66,6 @@
       color: #fff;
     }
 
-    input[type="range"] {
-      flex: 1;
-    }
-
-    input[type="number"] {
-      width: 60px;
-      padding: 6px;
-      border: none;
-      border-radius: 4px;
-    }
-
     button {
       padding: 10px;
       border: none;
@@ -92,6 +75,13 @@
       font-weight: bold;
       font-size: 20px;
       cursor: pointer;
+    }
+
+    #log {
+      text-align: center;
+      font-weight: bold;
+      color: #ee212f;
+      bottom: 0;
     }
 
     @media (max-width: 600px) {
@@ -116,15 +106,11 @@
   <form>
     <input type="text" id="ssid" placeholder="SSID" value="%SSID%" />
     <div id="pass-container">
-      <input type="password" id="pass" placeholder="Password" />
+      <input type="password" id="pass" placeholder="Password" value="%PASS%"/>
       <button type="button" onclick="togglePassword()" id="pass-toggle">Show</button>
     </div>
-    <label for="brightness">Brightness</label>
-    <div id="brightness-container">
-      <input type="range" id="brightness" min="0" max="128" value="%BRIGHT%" /><input type="number"
-        id="brightness-value" min="0" max="128" value="%BRIGHT%" />
-    </div>
-    <button type="button" onclick="save()">Save</button><a href="/" style="
+    <button type="button" onclick="save()">Save</button>
+    <a href="/" style="
           background-color: #fff;
           color: #000;
           text-decoration: none;
@@ -149,20 +135,23 @@
           max-width: 276px;
           margin-top: 10px;
         ">Clear all</a>
+        <p id="log"></p>
   </form>
   <script>
-    const r = document.getElementById("brightness"),
-      n = document.getElementById("brightness-value");
-    r.addEventListener("input", () => (n.value = r.value));
-    n.addEventListener("input", () => {
-      let e = parseInt(n.value);
-      isNaN(e) && (e = 0), e < 0 && (e = 0), e > 128 && (e = 128), (r.value = e), (n.value = e);
-    });
     function save() {
       const e = document.getElementById("ssid").value,
-        t = document.getElementById("pass").value,
-        a = n.value;
-      window.location.href = "settings?s=" + encodeURIComponent(e) + "&p=" + encodeURIComponent(t) + "&b=" + a;
+      log = document.getElementById("log"),
+      t = document.getElementById("pass").value;
+      url = "/s?s=" + encodeURIComponent(e) + "&p=" + encodeURIComponent(t);
+      xmlHttp = new XMLHttpRequest();
+      xmlHttp.open("GET", url, true);
+      xmlHttp.onreadystatechange = function () {
+        if (xmlHttp.readyState !== 4 || xmlHttp.status !== 200) {
+          console.log("Couldn't save settings: " + xmlHttp.statusText);
+          log.innerText = "Couldn't save settings: " + xmlHttp.statusText;
+        }
+      };
+      xmlHttp.send();
     }
     function togglePassword() {
       const input = document.getElementById("pass");
