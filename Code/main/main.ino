@@ -169,17 +169,22 @@ void setup() {
   updateDisplayTime();
 }
 
-void saveSettings(String &ssid, String& pass, uint8_t& bright) {
+void saveWiFiCredentials(String &ssid, String& pass) {
   prefs.begin("clock", false);
   prefs.putString("ssid", ssid);
   prefs.putString("pass", pass);
-  prefs.putInt("bright", bright);
   prefs.end();
 }
 
 void saveULong(const char *key, CRGB& value) {
   prefs.begin("clock", false);
   prefs.putULong(key, (unsigned long) value);
+  prefs.end();
+}
+
+void saveBrightness(uint8_t& bright) {
+  prefs.begin("clock", false);
+  prefs.putInt("bright", bright);
   prefs.end();
 }
 
@@ -237,7 +242,9 @@ void loop() {
       client.stop();
       Serial.println("Done with client");
 
-      if (restartScheluded) {
+      if (restartScheluded) {}
+        restartScheluded = false;
+        Serial.println("Settings changed, restarting...");
         restart();
       }
     }
@@ -256,7 +263,10 @@ String handleRequests(String request) {
   if (request == "/") {
     Serial.println("Sending 200");
     return getHomePage();
-  } else if (request.startsWith("/color?")) {
+  } else if (request == "/settings") {
+    Serial.println("Sending 200");
+    return getSettingsPage();
+  } else if (request.startsWith("/c?")) {
     // There should be 2 parameters to the request: Zone, COlor
     // Respectfully represented by z (int), c (String)
     int zone = 0;
@@ -291,41 +301,46 @@ String handleRequests(String request) {
     }
 
     Serial.println("Sending 200");
-    return getHomePage();
-  } else if (request.startsWith("/settings")) {
-      if (request != "/settings") {
-        // There can be 3 parameters: s (ssid), p (password) and b (brightness)
-        int ssid_start = request.indexOf("s=");
-        int ssid_end = request.indexOf("&p");
-        WiFiSSID = urlDecode(request.substring(ssid_start + 2, ssid_end));
-
-        int pass_start = request.indexOf("p=");
-        int pass_end = request.indexOf("&b");
-        WiFiPassword = urlDecode(request.substring(pass_start + 2, pass_end));
-
-        int bright_start = request.indexOf("b=");
-        String brightnessString = request.substring(bright_start + 2);
-        for (int i = 0;i < brightnessString.length();i++) {
-          if (!isDigit(brightnessString[i])) {
-            Serial.println("Sending 400");
-            return "HTTP/1.1 400 Bad Request\r\nContent-Type: text/plain\r\n\r\nBrightness must be an integer";
-          }
-        }
-
-        uint8_t bright = brightnessString.toInt();
-        if (bright < 0 || bright > 255) {
-          Serial.println("Sending 400");
-          return "HTTP/1.1 400 Bad Request\r\nContent-Type: text/plain\r\n\r\nZone must be between 0 and 255 (included)";
-        }
-        brightness = bright;
-
-        // Save these settings to EEPROM
-        saveSettings(WiFiSSID, WiFiPassword, brightness);
-        restartScheluded = true;
+    return "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nConnection: close\r\n\r\nColor changed successfully";
+  } else if (request.startWith("/b") {
+    // Request should contian only one argument: b with an integer between 0 and 255 (inclusive)
+    int brightnessStart = request.indexOf("b=");
+    String brightnessString = request.substring(brightnessStart + 2);
+    for (int i = 0;i < brightnessString.length();i++) {
+      if (!isDigit(brightnessString[i])) {
+        Serial.println("Sending 400");
+        return "HTTP/1.1 400 Bad Request\r\nContent-Type: text/plain\r\n\r\nBrightness must be an integer";
       }
+    }
 
-      Serial.println("Sending 200");
-      return getSettingsPage();
+    uint8_t bright = brightnessString.toInt();
+    if (bright < 0 || bright > 255) {
+      Serial.println("Sending 400");
+      return "HTTP/1.1 400 Bad Request\r\nContent-Type: text/plain\r\n\r\nZone must be between 0 and 255 (included)";
+    }
+    // Applying to global variable
+    brightness = bright;
+
+    // Saving to Preferences
+    save
+
+    Serial.println("Sending 200");
+    return "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nConnection: close\r\n\r\nBrightness changed successfully";
+  } else if (request.startsWith("/s")) {
+    // There can be 2 parameters: s (ssid), p (password)
+    int ssid_start = request.indexOf("s=");
+    int ssid_end = request.indexOf("&p");
+    WiFiSSID = urlDecode(request.substring(ssid_start + 2, ssid_end));
+
+    int pass_start = request.indexOf("p=");
+    WiFiPassword = urlDecode(request.substring(pass_start + 2);
+
+    // Save settings to EEPROM
+    saveWiFiCredentials(WiFiSSID, WiFiPassword);
+    restartScheluded = true;
+
+    Serial.println("Sending 200");
+    return "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nConnection:\r\n\r\nSettings changed, restarting...";
   } else if (request == "/clear") {
     prefs.begin("clock", false);
     prefs.clear();
@@ -334,7 +349,7 @@ String handleRequests(String request) {
     restartScheluded = true;
 
     Serial.println("Sending 200");
-    return getHomePage();
+    return "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nConnection:\r\n\r\nSettings cleared, restarting...";
   } else if (request == "/favicon.png") {
     File file = SPIFFS.open("/favicon.png", "r");
     if (!file) {
