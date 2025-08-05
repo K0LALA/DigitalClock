@@ -303,7 +303,7 @@ String handleRequests(String request) {
     Serial.println("Sending 200");
     return "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nConnection: close\r\n\r\nColor changed successfully";
   } else if (request.startWith("/b") {
-    // Request should contian only one argument: b with an integer between 0 and 255 (inclusive)
+    // Request should contain only one argument: b with an integer between 0 and 255 (inclusive)
     int brightnessStart = request.indexOf("b=");
     String brightnessString = request.substring(brightnessStart + 2);
     for (int i = 0;i < brightnessString.length();i++) {
