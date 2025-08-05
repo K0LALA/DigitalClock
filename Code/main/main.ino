@@ -384,6 +384,7 @@ String getHomePage() {
   content.replace(HOUR_COLOR_PLACEHOLDER, '#' + hourColorString);
   content.replace(COLON_COLOR_PLACEHOLDER, '#' + colonColorString);
   content.replace(MINUTE_COLOR_PLACEHOLDER, '#' + minuteColorString);
+  content.replace(BRIGHTNESS_PLACEHOLDER, String(brightness));
   response += content;
 
   return response;
@@ -401,7 +402,6 @@ String getSettingsPage() {
   String response = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nConnection: close\r\n\r\n";
   content.replace(SSID_PLACEHOLDER, WiFiSSID);
   content.replace(PASS_PLACEHOLDER, WiFiPassword);
-  content.replace(BRIGHTNESS_PLACEHOLDER, String(brightness));
   response += content;
 
   return response;
