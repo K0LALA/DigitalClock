@@ -89,8 +89,19 @@ bool isServerOnline = false;
 
 bool restartScheluded = false;
 
+void saveWiFiCredentials(String &ssid, String& pass);
+void saveULong(const char *key, CRGB& value);
+void saveBrightness(uint8_t& bright);
 void loadSettings(String& ssid, String& pass, CRGB &hour, CRGB &colon, CRGB &minute, uint8_t &brightness);
 bool startWebServer();
+String handleRequests(String request);
+String getHomePage();
+String getSettingsPage();
+String urlDecode(const String& input);
+void restart();
+void updateColon();
+void updateDisplayTime();
+void displayCharacterToLeds(bool *character, CRGBW *leds, CRGB onColor, int length);
 
 void setup() {
   Serial.begin(115200);
@@ -242,7 +253,7 @@ void loop() {
       client.stop();
       Serial.println("Done with client");
 
-      if (restartScheluded) {}
+      if (restartScheluded) {
         restartScheluded = false;
         Serial.println("Settings changed, restarting...");
         restart();
@@ -302,7 +313,7 @@ String handleRequests(String request) {
 
     Serial.println("Sending 200");
     return "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nConnection: close\r\n\r\nColor changed successfully";
-  } else if (request.startWith("/b") {
+  } else if (request.startsWith("/b")) {
     // Request should contain only one argument: b with an integer between 0 and 255 (inclusive)
     int brightnessStart = request.indexOf("b=");
     String brightnessString = request.substring(brightnessStart + 2);
@@ -322,7 +333,7 @@ String handleRequests(String request) {
     brightness = bright;
 
     // Saving to Preferences
-    save
+    saveBrightness(bright);
 
     Serial.println("Sending 200");
     return "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nConnection: close\r\n\r\nBrightness changed successfully";
@@ -333,7 +344,7 @@ String handleRequests(String request) {
     WiFiSSID = urlDecode(request.substring(ssid_start + 2, ssid_end));
 
     int pass_start = request.indexOf("p=");
-    WiFiPassword = urlDecode(request.substring(pass_start + 2);
+    WiFiPassword = urlDecode(request.substring(pass_start + 2));
 
     // Save settings to EEPROM
     saveWiFiCredentials(WiFiSSID, WiFiPassword);
