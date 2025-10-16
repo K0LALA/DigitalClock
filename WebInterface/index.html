@@ -327,7 +327,7 @@
       xmlHttp.open("GET", "/b?b=" + value, true);
       xmlHttp.send();
       xmlHttp.onreadystatechange = function() {
-        if (xmlHttp.readyState !== 4 || xmlHttp.status !== 200) {
+        if (xmlHttp.readyState != 4 || xmlHttp.status != 200) {
           console.log("Couldn't send brightness update request:" + xmlHttp.statusText);
           log.innerText = "Couldn't send brightness update request: " + xmlHttp.statusText;
         }
@@ -349,7 +349,7 @@
       xmlHttp.open("GET", "/c?z=" + n + "&c=" + i.substring(1), true);
       xmlHttp.send();
       xmlHttp.onreadystatechange = function() {
-        if (xmlHttp.readyState !== 4 || xmlHttp.status !== 200) {
+        if (xmlHttp.readyState != 4 || xmlHttp.status != 200) {
           console.log("Couldn't send color update request:" + xmlHttp.statusText);
           log.innerText = "Couldn't send color update request: " + xmlHttp.statusText;
         }
