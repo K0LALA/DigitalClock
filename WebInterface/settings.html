@@ -146,7 +146,7 @@
       xmlHttp = new XMLHttpRequest();
       xmlHttp.open("GET", url, true);
       xmlHttp.onreadystatechange = function () {
-        if (xmlHttp.readyState !== 4 || xmlHttp.status !== 200) {
+        if (xmlHttp.readyState != 4 || xmlHttp.status != 200) {
           console.log("Couldn't save settings: " + xmlHttp.statusText);
           log.innerText = "Couldn't save settings: " + xmlHttp.statusText;
         }
