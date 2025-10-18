@@ -311,6 +311,7 @@ String handleRequests(String request) {
       saveULong("minute", minuteColor);
     }
 
+    updateDisplayTime();
     Serial.println("Sending 200");
     return "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nConnection: close\r\n\r\nColor changed successfully";
   } else if (request.startsWith("/b")) {
@@ -324,17 +325,15 @@ String handleRequests(String request) {
       }
     }
 
-    uint8_t bright = brightnessString.toInt();
-    if (bright < 0 || bright > 255) {
-      Serial.println("Sending 400");
-      return "HTTP/1.1 400 Bad Request\r\nContent-Type: text/plain\r\n\r\nZone must be between 0 and 255 (included)";
-    }
     // Applying to global variable
-    brightness = bright;
+    
+    brightness = brightnessString.toInt();
+    FastLED.setBrightness(brightness);
 
     // Saving to Preferences
-    saveBrightness(bright);
+    saveBrightness(brightness);
 
+    updateDisplayTime();
     Serial.println("Sending 200");
     return "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nConnection: close\r\n\r\nBrightness changed successfully";
   } else if (request.startsWith("/s")) {
