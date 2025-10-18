@@ -146,9 +146,12 @@
       xmlHttp = new XMLHttpRequest();
       xmlHttp.open("GET", url, true);
       xmlHttp.onreadystatechange = function () {
-        if (xmlHttp.readyState != 4 || xmlHttp.status != 200) {
-          console.log("Couldn't save settings: " + xmlHttp.statusText);
-          log.innerText = "Couldn't save settings: " + xmlHttp.statusText;
+        if (xmlHttp.readyState !== XMLHttpRequest.DONE)
+        {
+          if (xmlHttp.status !== 0 && !(xmlHttp.status >= 200 && xmlHttp.status < 400)) {
+            console.log("Couldn't save settings: " + xmlHttp.statusText);
+            log.innerText = "Couldn't save settings: " + xmlHttp.statusText;
+          }
         }
       };
       xmlHttp.send();
